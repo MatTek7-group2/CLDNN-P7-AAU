@@ -7,21 +7,16 @@ Authors:  Martin Voigt Vejling, Daniel Bernard van Diepen,
           Andreas Anton Andersen, Morten Stig Kaaber
 E-Mails: {mvejli17, dvandi17, aand17, mkaabe17}@student.aau.dk
 
-This module contains functionality to import the Aurora-2 data and Apollo-11
-data to use for voice activity detection with a convolutional long
-short-term memory fully connected deep neural network (CLDNN) as described
-in the paper
+This script can be used for training and testing convolutional long
+short-term memory fully connected deep neural networks for voice activity
+detection (VAD) on the Aurora-2 and Apollo-2 databases. The VAD method is
+discussed in the paper
 
     On the Generalisation Ability of Unsupervised and Supervised Voice
                   Activity Detection Methods (2020)
 
-Functionality for training and testing the CLDNN using PyTorch is included
-herein the use of early stopping, computing and plotting the receiver
-operation characteristic (ROC) curves and approximating the area under
-the ROC curve, abreviated AUC.
-
-The functionality provided in this module is used in the script "CLDNN_MAIN"
-which is located in the GitHub repository.
+This script uses functionality from the module provided in "MODULE" which
+is located in the GitHub repository.
 
 To use this code the Aurora-2 and Apollo-11 data should be available and
 organised as described in the readme file.
