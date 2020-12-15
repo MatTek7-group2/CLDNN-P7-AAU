@@ -307,7 +307,7 @@ if __name__ == '__main__':
 
     ### Early stopping ###
     opt_upd, upd_epoch = P7.early_stopping(args, model, device, optimizer, scheduler,
-                                           subtrain_loader, valid_loader, test_loader,
+                                           subtrain_loader, valid_loader,
                                            actuals_valid, actuals, figname=es_figname)
 
     ### Re-training ###

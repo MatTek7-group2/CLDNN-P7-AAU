@@ -776,8 +776,6 @@ def validation(model, device, valid_loader):
     -------
     valid_loss : float
         The validation loss.
-    y_hat : ndarray
-        Output of the neural network for the validation set.
 
     Evaluates the validation set. This is done during early stopping.
 
@@ -799,7 +797,7 @@ def validation(model, device, valid_loader):
 
 def end_of_early_stopping(train_loss_plot, valid_loss_plot,
                           updates_pr_pretrain_epoch, updates_counter,
-                          plot_validation = True, figname = 'Validation_plot'):
+                          figname = 'Validation_plot'):
     """
 
     Parameters
@@ -812,8 +810,6 @@ def end_of_early_stopping(train_loss_plot, valid_loss_plot,
         Number of parameters updates per epoch over subtrain.
     updates_counter : int
         Number of parameters updates done.
-    plot_validation : bool, optional (Default: True)
-        To plot or not to plot.
     figname : string or boolean, optional (Default: 'Validation_plot')
         If it is a string then it is used as the figure
         name to save the validation plot.
@@ -821,21 +817,20 @@ def end_of_early_stopping(train_loss_plot, valid_loss_plot,
     This code is run at the end of early stopping pre-training.
 
     """
-    if plot_validation:
-        plt.style.use('ggplot')
-        xaxis_list = np.linspace(0, updates_counter, len(train_loss_plot))/updates_pr_pretrain_epoch
-        plt.plot(xaxis_list, train_loss_plot, color='orange', label='Training loss')
-        plt.plot(xaxis_list, valid_loss_plot, color='magenta', label='Validation loss')
-        plt.xlabel('Epochs')
-        plt.ylabel('Loss')
-        plt.legend()
-        if figname is not False:
-            plt.savefig('Figures\\' + figname + '_ES.png')
-        plt.show()
+    plt.style.use('ggplot')
+    xaxis_list = np.linspace(0, updates_counter, len(train_loss_plot))/updates_pr_pretrain_epoch
+    plt.plot(xaxis_list, train_loss_plot, color='orange', label='Training loss')
+    plt.plot(xaxis_list, valid_loss_plot, color='magenta', label='Validation loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    if figname is not False:
+        plt.savefig('Figures\\' + figname + '_ES.png')
+    plt.show()
 
 
 def early_stopping(args, model, device, optimizer, scheduler,
-                   subtrain_loader, valid_loader, test_loader,
+                   subtrain_loader, valid_loader,
                    actuals_valid, actuals, figname = 'Validation_plot'):
     """
 
@@ -850,8 +845,6 @@ def early_stopping(args, model, device, optimizer, scheduler,
         Subtrain dataset.
     valid_loader : Dataloader
         Validation dataset.
-    test_loader : Dataloader
-        Test dataset.
     actuals_valid : ndarray
         Targets for the validation set.
     actuals : ndarray
@@ -916,7 +909,7 @@ def early_stopping(args, model, device, optimizer, scheduler,
                 interval_loss = 0
 
                 if no_increase_counter == args.patience:
-                    end_of_early_stopping(actuals_valid, train_loss_plot, valid_loss_plot,
+                    end_of_early_stopping(train_loss_plot, valid_loss_plot,
                                           updates_pr_pretrain_epoch, updates_counter,
                                           figname=figname)
                     return optim_updates, updates_pr_pretrain_epoch
@@ -930,7 +923,7 @@ def early_stopping(args, model, device, optimizer, scheduler,
         if epoch == 1:
             updates_pr_pretrain_epoch = updates_counter
 
-    end_of_early_stopping(actuals_valid, train_loss_plot, valid_loss_plot,
+    end_of_early_stopping(train_loss_plot, valid_loss_plot,
                           updates_pr_pretrain_epoch, updates_counter,
                           figname=figname)
 
