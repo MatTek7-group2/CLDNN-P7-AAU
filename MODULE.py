@@ -36,6 +36,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import auc
 from scipy.io import wavfile
+from sklearn.utils import shuffle
 import pickle
 import torch
 import torch.nn.functional as F
@@ -348,17 +349,21 @@ def import_test_data(test_path, test_target_path,
     test_target : list
         Test targets.
 
-    The function finds the names of each of the files in the given directory.
+    The function finds the names of each of the files in the given directory,
+    i.e. data of specified SNR levels belonging to the specified test set.
     Then it sorts the files such that the data and the targets match and
     checks that this is done correctly. Then the data is imported
     into a list of arrays where each array contains the data for a
-    given file.
+    given file. Finally, the targets are import into a list of lists containing the 
+    targets for each file.
+
+    This function is used for the Aurora-2 Test Sets.
 
     """
-    #Only include a certain SNR level in the test data
+    #Only include certain SNR levels in the test data
     test_dir = SNR_data(test_path, SNR_list, include_clean, test_set, noise_types)
-    target_dir_full = target_dir(test_target_path)
 
+    target_dir_full = target_dir(test_target_path)
     test_dir_name = file_name_data(test_dir)
     test_target_dir_name = file_name_target(target_dir_full)
 
@@ -382,13 +387,12 @@ def import_test_data(test_path, test_target_path,
             test_target_dir.append(test_target_dir_temp)
         test_target_dir = [item for sublist in test_target_dir for item in sublist]
     else:
-        print('Load data error')
+        print('Load Test Data Error')
 
     #Sort to make the data match the targets
     test_dir_name2, test_target_dir_name2 = file_name(test_dir, test_target_dir)
     sorted_test = sort_list(test_dir, test_dir_name2)
     sorted_test_target = sort_list(test_target_dir, test_target_dir_name2)
-    #print(sorted_test[8:10])
 
     #Check that the files in the data and the target match
     same_file(sorted_test, sorted_test_target)
@@ -397,12 +401,13 @@ def import_test_data(test_path, test_target_path,
     test_data = load_data(sorted_test)
     test_target = load_target(sorted_test_target)
 
+    if len(test_data) == 0 or len(test_target) == 0:
+        print('Test Data Directory error')
+
     return test_data, test_target
 
 
-def import_data(train_path, train_target_path, test_path, test_target_path,
-                SNR_list=[-5, 0, 5, 10, 15, 20], include_clean=False,
-                test_set='B', noise_types=[1, 2, 3, 4]):
+def import_train_data(train_path, train_target_path):
     """
 
     Parameters
@@ -411,16 +416,6 @@ def import_data(train_path, train_target_path, test_path, test_target_path,
         Path to the training data.
     train_target_path : str
         Path to the targets in the training data.
-    test_path : str
-        Path to the test data.
-    test_target_path : str
-        Path to the targets in the test data.
-    SNR : list, optional (Default = [-5, 0, 5, 10, 15, 20])
-        List of ints in the set {-5, 0, 5, 10, 15, 20}.
-        The SNR levels of the data to load.
-    include_clean : bool, optional (Default: False)
-        If True include the clean test data.
-        If False do not include the clean test data.
 
     Returns
     -------
@@ -428,16 +423,15 @@ def import_data(train_path, train_target_path, test_path, test_target_path,
         Training data.
     train_target : list
         Training targets.
-    test_data : list
-        Test data.
-    test_target : list
-        Test targets.
 
     The function finds the names of each of the files in the given directory.
     Then it sorts the files such that the data and the targets match and
-    checks that this is done correctly. Then the data is imported
-    into a list of arrays where each array contains the data for a
-    given file.
+    checks that this is done correctly. Then the data is imported into a
+    list of arrays where each array contains the data for a given file.
+    Finally, the targets are import into a list of lists containing the 
+    targets for each file.
+
+    This function is used for the Aurora-2 Training Set.
 
     """
     #Directory of data files
@@ -453,11 +447,13 @@ def import_data(train_path, train_target_path, test_path, test_target_path,
     train_data = load_data(sorted_train)
     train_target = load_target(sorted_train_target)
 
-    #Import test data
-    test_data, test_target = import_test_data(test_path, test_target_path,
-                                              SNR_list, include_clean, test_set, noise_types)
+    if len(train_data) == 0 or len(train_target) == 0:
+        print('Train Data Directory error')
 
-    return train_data, train_target, test_data, test_target
+    #Shuffling train data
+    train_data, train_target = shuffle(train_data, train_target)
+
+    return train_data, train_target
 
 
 def add_context(data, context_size, w_len, step, noisy=True):
@@ -896,8 +892,7 @@ def early_stopping(args, model, device, optimizer, scheduler,
 
             updates_counter += 1
         scheduler.step()
-        _, y_hat = test(model, device, test_loader)
-        print('AUC: {}\n'.format(roc(actuals, y_hat, nr_points=51)[2]))
+
         if no_increase_counter == args.patience:
             break
         if epoch == 1:
@@ -1052,7 +1047,7 @@ def plot_roc(fp, tp, figname = False):
     plt.ylabel('True Positive Rate')
     plt.legend(loc="lower right")
     if figname is not False:
-        plt.savefig('Figures\\' + figname + '.png')
+        plt.savefig(figname + '.png')
     plt.show()
 
 
@@ -1096,74 +1091,4 @@ def load_obj(name, folder = 'Model_Dictionaries/'):
     """
     with open(folder + name + '.pkl', 'rb') as f:
         return pickle.load(f)
-
-
-# =============================================================================
-# MAIN
-# =============================================================================
-
-
-def aurora_main():
-    w_len = 280
-    step = 80
-    context_size=16
-    path = 'C:\\Users\\marti'
-    #path = 'C:\\Users\\Martin Voigt Vejling'
-
-    train_path = path + "\\aurora2\\SPEECHDATA\\TRAIN_NOISY/"
-    train_target_path = path + "\\aurora2\\Aurora2TrainSet-ReferenceVAD/"
-    test_path = path + "\\aurora2\\SPEECHDATA\\"
-    test_target_path = path + "\\aurora2\\Aurora2TestSet-ReferenceVAD/"
-
-    SNR_list = [0]#[-5, 0, 5, 10, 15, 20]
-    train_data, train_target, test_data, test_target = import_data(train_path, train_target_path,
-                                               test_path, test_target_path, SNR_list)
-    test_data = add_context(test_data, context_size, w_len, step, noisy=False)
-
-    print(len(train_data))
-
-    #train_dir = data_dir(train_path)
-    #train_target_dir = target_dir(train_target_path)
-
-    #test_dir = data_dir(test_path + 'TEST_B/')
-    #test_target_dir = target_dir(test_target_path)
-
-    idx = 0
-    #print(len(test_data[idx]))
-    #plt.plot(test_data[idx])
-    #plt.show()
-
-
-def apollo_main():
-    path = 'C:\\Users\\marti'
-    context_size = 10
-    w_len = 280
-    step = 80
-    seed = 42
-    noisy_context = True
-
-
-    train_path = data_dir_APOLLO(path, 'train')
-    train_target_path = target_dir_APOLLO(path, 'train')
-    train_data = load_data_APOLLO(train_path)
-    train_target = load_target(train_target_path)
-
-    test_path = data_dir_APOLLO(path, 'test')
-    test_target_path = target_dir_APOLLO(path, 'test')
-    test_data = load_data_APOLLO(test_path)
-    test_target = load_target(test_target_path)
-
-    #Add context to data
-    train_data = add_context(train_data, context_size, w_len, step, noisy=noisy_context)
-    test_data = add_context(test_data, context_size, w_len, step, noisy=noisy_context)
-
-    #Determine indices of frames in data
-    train_frame_idx = frame_index_list(w_len, step, train_data, context_size)
-    test_frame_idx = frame_index_list(w_len, step, test_data, context_size)
-    print(sum(np.concatenate(test_target))/len(np.concatenate(test_target)))
-
-if __name__ == '__main__':
-    #aurora_main()
-    apollo_main()
-
 

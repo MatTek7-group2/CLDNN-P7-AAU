@@ -31,20 +31,19 @@ The scripts are developed using Python 3.6 and PyTorch 1.7.0.
 """
 
 from __future__ import print_function
-import numpy as np
-import argparse
 from math import floor
+import argparse
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import Dataset
 from torch.optim.lr_scheduler import StepLR
-import P7_Module as P7
-from time import time
 from sklearn.model_selection import train_test_split
 import copy
-from sklearn.utils import shuffle
+from time import time
+import MODULE as P7
 
 
 class CLDNN(nn.Module):
@@ -153,19 +152,20 @@ class PyTorchDatasetList(Dataset):
 
 
 if __name__ == '__main__':
-    train_set = 'Aurora-2'
+    train_set = 'Aurora-2' # Options: 'Aurora-2' or 'Apollo-11'
+    test_set = 'Aurora-2'  # Options: 'Aurora-2' or 'Apollo-11'
 
-    test_set = 'B'
-    noise_types = [1, 2, 3, 4]
+    aurora_test_set = 'B' # Used for Aurora-2 test set
+    noise_types = [1, 2, 3, 4] # Used for Aurora-2 test set
+    SNR_list = [5] # Used for Aurora-2 test set
+    test_on_clean = False # Used for Aurora-2 test set
 
-    save_model = True
-    save_results = True
-    context_size = 16
-    model_name = 'Third_draft\\CLDNN_context{}'.format(context_size)
-    noisy_context = True
-    SNR_list = [5]
-    test_on_clean = False
+    save_model = False # Save neural network model dictionary
+    save_results = False # Save dictionary containing the experimental results
+    context_size = 4 # Frames of context (C = context_size * step)
+    model_name = 'CLDNN_context{}'.format(context_size) # Name of the model
 
+    # CLDNN hyperparameters
     model_kwargs = {'dropout_rate_input': 0.2,
                     'dropout_rate_hidden': 0.5,
                     'out_channels1': 40,
@@ -220,25 +220,43 @@ if __name__ == '__main__':
     w_len = int(args.segment_time*args.fs)
     step = int(args.window_overlap*args.fs)
 
-    # ========================================================================
-    # IMPORT DATA
-    # ========================================================================
-    #### OBS HUSK AT RETTE TRAIN PATH TIL README
-    train_path = args.path + "\\aurora2\\SPEECHDATA\\TRAIN_NOISY/"
-    train_target_path = args.path + "\\aurora2\\Aurora2TrainSet-ReferenceVAD/"
-    test_path = args.path + "\\aurora2\\SPEECHDATA\\"
-    test_target_path = args.path + "\\aurora2\\Aurora2TestSet-ReferenceVAD/"
 
-    train_data, train_target, test_data, test_target = P7.import_data(train_path, train_target_path,
-                                                                      test_path, test_target_path,
-                                                                      SNR_list, test_on_clean)    
-    train_data, train_target = shuffle(train_data, train_target) #Shuffling train data
-    if len(train_data) == 0:
-        print('Directory error')
+    # ========================================================================
+    # DATA PREPARATION
+    # ========================================================================
+
+    # Import Training Data
+    if train_set == 'Aurora-2':
+        #### OBS HUSK AT RETTE TRAIN PATH TIL README
+        train_path = args.path + "\\aurora2\\SPEECHDATA\\TRAIN_NOISY/"
+        train_target_path = args.path + "\\aurora2\\Aurora2TrainSet-ReferenceVAD/"
+        train_data, train_target = P7.import_train_data(train_path, train_target_path)
+    elif train_set == 'Apollo-11':
+        train_path = P7.data_dir_APOLLO(args.path, 'train')
+        train_target_path = P7.target_dir_APOLLO(args.path, 'train')
+        train_data = P7.load_data_APOLLO(train_path)
+        train_target = P7.load_target(train_target_path)
+    else:
+        print('Training Set Error')
+
+    # Import Testing Data
+    if test_set == 'Aurora-2':
+        test_path = args.path + "\\aurora2\\SPEECHDATA\\"
+        test_target_path = args.path + "\\aurora2\\Aurora2TestSet-ReferenceVAD/"
+        test_data, test_target = P7.import_test_data(test_path, test_target_path,
+                                                     SNR_list, test_on_clean, aurora_test_set,
+                                                     noise_types)
+    elif test_set == 'Apollo-11':
+        test_path = P7.data_dir_APOLLO(args.path, 'test')
+        test_target_path = P7.target_dir_APOLLO(args.path, 'test')
+        test_data = P7.load_data_APOLLO(test_path)
+        test_target = P7.load_target(test_target_path)
+    else:
+        print('Test Set Error')
 
     #Add context to data
-    train_data = P7.add_context(train_data, context_size, w_len, step, noisy=noisy_context)
-    test_data = P7.add_context(test_data, context_size, w_len, step, noisy=noisy_context)
+    train_data = P7.add_context(train_data, context_size, w_len, step)
+    test_data = P7.add_context(test_data, context_size, w_len, step)
 
     #Determine indices of frames in data
     train_frame_idx = P7.frame_index_list(w_len, step, train_data, context_size)
@@ -255,7 +273,6 @@ if __name__ == '__main__':
     dset2 = PyTorchDatasetList(test_data, test_target, test_frame_idx, w_len, step, context_size)
     test_loader = torch.utils.data.DataLoader(dset2, **test_kwargs)
 
-
     #Subtrain and validation data sets
     subtrain_data, valid_data, subtrain_target, valid_target = train_test_split(train_data, train_target, test_size=0.2, random_state = args.seed)
 
@@ -265,19 +282,26 @@ if __name__ == '__main__':
     dset_subtrain = PyTorchDatasetList(subtrain_data, subtrain_target, subtrain_frame_idx, w_len, step, context_size)
     subtrain_loader = torch.utils.data.DataLoader(dset_subtrain, **train_kwargs)
 
-    valid_kwargs = {'batch_size': 128}
+    valid_kwargs = {'batch_size': 256}
     dset_valid = PyTorchDatasetList(valid_data, valid_target, valid_frame_idx, w_len, step, context_size)
     valid_loader = torch.utils.data.DataLoader(dset_valid, **valid_kwargs)
 
-
     #Targets used for ROC
-    actuals = np.concatenate([tt[:-1] for tt in test_target]) #One less target pr. file since 35ms-25ms = 10ms
-    actuals_valid = np.concatenate([tv[:-1] for tv in valid_target])
+    if train_set == 'Aurora-2':
+        actuals_valid = np.concatenate([tv[:-1] for tv in valid_target]) # One less target pr. file since 35ms-25ms = 10ms
+    elif train_set == 'Apollo-11':
+        actuals_valid = np.concatenate([tv[:-3] for tv in valid_target]) # Three less targets pr. file since 4*10 ms > 35 ms
+
+    if test_set == 'Aurora-2':
+        actuals = np.concatenate([tt[:-1] for tt in test_target])
+    elif test_set == 'Apollo-11':
+        actuals = np.concatenate([tt[:-3] for tt in test_target])
 
 
     # ========================================================================
     # Neural Network Training and Testing
     # ========================================================================
+
     ### Train and Test Model ###
     print('\nPre-training:\n')
     model = CLDNN(w_len, step, context_size, **model_kwargs).to(device)
@@ -306,10 +330,7 @@ if __name__ == '__main__':
                                                     opt_upd, updates_counter,
                                                     scheduler, upd_epoch)
         epoch += 1
-        if updates_counter < opt_upd:
-            _, y_hat = P7.test(model, device, test_loader)
-            print('AUC: {}\n'.format(P7.roc(actuals, y_hat, nr_points=51)[2]))
-    print('LR: {}\n'.format(scheduler.get_last_lr()))
+    print('Learning rate when ending training: {}\n'.format(scheduler.get_last_lr()[0]))
 
     ### Test time ###
     if use_cuda is True:
@@ -321,36 +342,36 @@ if __name__ == '__main__':
         # Waits for everything to finish running
         torch.cuda.synchronize()
         test_time = start.elapsed_time(end) / 1000 #GPU time in seconds
-        print('{:.5g} seconds'.format(test_time))
+        print('{:.4g} seconds'.format(test_time))
     else:
         time1 = time()
         ACC, y_hat = P7.test(model, device, test_loader)
         time2 = time()
         test_time = time2-time1 #CPU time in seconds
-        print('Test time: {:.5g} seconds'.format(test_time))
+        print('Test time: {:.4g} seconds'.format(test_time))
 
-    fp, tp, AUC, ACC_list, threshold = P7.roc(actuals, y_hat)
+    fp, tp, AUC, ACC_list, threshold_list = P7.roc(actuals, y_hat)
 
     if save_model is True:
-        torch.save(model.state_dict(), "NeuralNetworks\\" + model_name + ".pt")
-        P7.save_obj(model_kwargs, model_name, 'Model_Dictionaries/')
+        torch.save(model.state_dict(), model_name + ".pt")
+        P7.save_obj(model_kwargs, model_name, '')
 
     PARAMS = sum(p.numel() for p in model.parameters())
-    print('Area Under the Curve: {:.5g}'.format(AUC))
+    print('Area Under the Curve: {:.4g}'.format(AUC))
     print('Number of parameters: {}'.format(PARAMS))
 
     if save_results is True:
         P7.plot_roc(fp, tp, figname = model_name + '_ROC')
         results = {'SNR': SNR_list,
                    'context_size': context_size,
-                   'PARAMS': PARAMS,
+                   'Number of Parameters': PARAMS,
                    'AUC': AUC,
                    'ACC': ACC,
-                   'ACC_list': ACC_list,
-                   'Threshold': threshold,
-                   'Test_Time': test_time,
-                   'Learning_rate': args.lr,
-                   'fp_tp': (fp, tp)}
-        P7.save_obj(results, model_name, 'Results/')
+                   'ACC List': ACC_list,
+                   'Threshold List': threshold_list,
+                   'Test Time': test_time,
+                   'Learning Rate': args.lr,
+                   'False and True Positive Rates': (fp, tp)}
+        P7.save_obj(results, model_name, '')
     else:
         P7.plot_roc(fp, tp)
