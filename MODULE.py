@@ -116,9 +116,6 @@ def file_name(data_dir, target_dir):
     Takes a list of file paths and returns the file names.
     Is used to sort the files when using the noisy dataset.
 
-    OBS! Det er potentielt ikke sikkert at de her string splits virker
-    med alle stier til filerne.
-
     """
     data_name = []
     target_name = []
