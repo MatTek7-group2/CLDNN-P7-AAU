@@ -324,6 +324,7 @@ if __name__ == '__main__':
                                                     train_loader, optimizer, epoch,
                                                     opt_upd, updates_counter,
                                                     scheduler, upd_epoch)
+        print('')
         epoch += 1
     print('Learning rate when ending training: {}\n'.format(scheduler.get_last_lr()[0]))
 

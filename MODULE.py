@@ -892,6 +892,7 @@ def early_stopping(args, model, device, optimizer, scheduler,
 
             updates_counter += 1
         scheduler.step()
+        print('')
 
         if no_increase_counter == args.patience:
             break
