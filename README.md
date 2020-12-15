@@ -1,14 +1,18 @@
-# CLDNN-P7-AAU
-On the Generalisation Ability of Unsupervised and Supervised Voice Activity Detection Methods
+# On the Generalisation Ability of Unsupervised and Supervised Voice Activity Detection Methods
+Scripts accompanpanying the paper:
 
+A. A. Andersen, D. B. van Diepen, M. V. Vejling and M. S. Kaaber "On the Generalisation Ability of Unsupervised and Supervised Voice Activity Detection Methods", SEMCON, Aalborg University, Denmark, 2020
 
-Data Sets:
+Internally published for the seventh semester conference (SEMCON) at Department of Electronic Systems, Aalborg University.
 
---- The Apollo-11 data organized in the archive ---
+## Data Sets:
+In order to run the scripts, the data sets should be organised as follows:
+
+#### --- The Apollo-11 data organised in the archive ---
 
 ```
 ./Fearless_Steps
-├── Data                       -- a tar.gz File (unzip to see the folder contents)
+├── Data                       -- unzipped from the tar.gz file
 │   ├── Audio                  -- the audio as 8kHz wav files
 │   │   └── Tracks             -- audio files for VAD
 │   │       ├── Dev               (.wav Files)
@@ -18,7 +22,7 @@ Data Sets:
 ```
 
 
---- The Aurora-2 data organized in the archive ---
+#### --- The Aurora-2 data organised in the archive ---
 ```
 ./aurora2
 ├── SPEECHDATA                    -- the audio as 8kHz wav files
@@ -31,11 +35,11 @@ Data Sets:
 ├── Aurora2TrainSet-ReferenceVAD  -- file level transcriptions
 ```
 
-Scripts:
+## Scripts:
 
-CLDNN_MAIN.py
+`CLDNN_MAIN.py`
 	- Main script for training and testing convolutional long short-term memory fully connected deep neural networks.
 
-MODULE.py
+`MODULE.py`
 	- Module script containing functionality used in CLDNN_MAIN.
 
