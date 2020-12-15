@@ -8,12 +8,12 @@ Data Sets:
 
 ```
 ./Fearless_Steps
-├── Data 			  -- a tar.gz File (unzip to see the folder contents)
+├── Data                       -- a tar.gz File (unzip to see the folder contents)
 │   ├── Audio                  -- the audio as 8kHz wav files
 │   │   └── Tracks             -- audio files for VAD
-│   │       ├── Dev		     (.wav Files)
+│   │       ├── Dev               (.wav Files)
 │   └── Transcripts            -- file level transcriptions
-│       ├── SAD                   (TXT Files)
+│       ├── SAD                   (.TXT Files)
 │       │   └── Dev
 ```
 
@@ -26,7 +26,7 @@ Data Sets:
 │   ├── TESTB                        (.08 Files)
 │   ├── TESTC                        (.08 Files)
 │   └── TRAIN                     -- Multi-condition training data
-│					(.08 Files)
+│                                    (.08 Files)
 ├── Aurora2TestSet-ReferenceVAD   -- file level transcriptions
 ├── Aurora2TrainSet-ReferenceVAD  -- file level transcriptions
 ```
