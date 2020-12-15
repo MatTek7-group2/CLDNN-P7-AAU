@@ -6,12 +6,13 @@ A. A. Andersen, D. B. van Diepen, M. V. Vejling and M. S. Kaaber "On the General
 Internally published for the seventh semester conference (SEMCON) at Department of Electronic Systems, Aalborg University.
 
 ## Data Sets:
+In order to run the scripts, the data sets should be organised as follows:
 
---- The Apollo-11 data organized in the archive ---
+--- The Apollo-11 data organised in the archive ---
 
 ```
 ./Fearless_Steps
-├── Data                       -- a tar.gz File (unzip to see the folder contents)
+├── Data                       -- unzipped from the tar.gz file
 │   ├── Audio                  -- the audio as 8kHz wav files
 │   │   └── Tracks             -- audio files for VAD
 │   │       ├── Dev               (.wav Files)
@@ -21,7 +22,7 @@ Internally published for the seventh semester conference (SEMCON) at Department 
 ```
 
 
---- The Aurora-2 data organized in the archive ---
+--- The Aurora-2 data organised in the archive ---
 ```
 ./aurora2
 ├── SPEECHDATA                    -- the audio as 8kHz wav files
