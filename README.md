@@ -8,7 +8,7 @@ Internally published for the seventh semester conference (SEMCON) at Department 
 ## Data Sets:
 In order to run the scripts, the data sets should be organised as follows:
 
---- The Apollo-11 data organised in the archive ---
+#### --- The Apollo-11 data organised in the archive ---
 
 ```
 ./Fearless_Steps
@@ -22,7 +22,7 @@ In order to run the scripts, the data sets should be organised as follows:
 ```
 
 
---- The Aurora-2 data organised in the archive ---
+#### --- The Aurora-2 data organised in the archive ---
 ```
 ./aurora2
 ├── SPEECHDATA                    -- the audio as 8kHz wav files
@@ -35,11 +35,11 @@ In order to run the scripts, the data sets should be organised as follows:
 ├── Aurora2TrainSet-ReferenceVAD  -- file level transcriptions
 ```
 
-Scripts:
+## Scripts:
 
-CLDNN_MAIN.py
+`CLDNN_MAIN.py`
 	- Main script for training and testing convolutional long short-term memory fully connected deep neural networks.
 
-MODULE.py
+`MODULE.py`
 	- Module script containing functionality used in CLDNN_MAIN.
 
