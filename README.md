@@ -1,8 +1,11 @@
-# CLDNN-P7-AAU
-On the Generalisation Ability of Unsupervised and Supervised Voice Activity Detection Methods
+# On the Generalisation Ability of Unsupervised and Supervised Voice Activity Detection Methods
+Scripts accompanpanying the paper:
 
+A. A. Andersen, D. B. van Diepen, M. V. Vejling and M. S. Kaaber "On the Generalisation Ability of Unsupervised and Supervised Voice Activity Detection Methods", SEMCON, Aalborg University, Denmark, 2020
 
-Data Sets:
+Internally published for the seventh semester conference (SEMCON) at Department of Electronic Systems, Aalborg University.
+
+## Data Sets:
 
 --- The Apollo-11 data organized in the archive ---
 
