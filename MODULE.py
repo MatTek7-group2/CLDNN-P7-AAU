@@ -114,7 +114,7 @@ def file_name(data_dir, target_dir):
         List of strings containing name of the file.
 
     Takes a list of file paths and returns the file names.
-    Is used to sort the files when using the noisy dataset.
+    It is used to sort the files when using the Aurora-2 data.
 
     """
     data_name = []
@@ -133,6 +133,23 @@ def file_name(data_dir, target_dir):
 
 
 def file_name_data(data_dir):
+    """
+
+    Parameters
+    ----------
+    data_dir : list
+        List of strings containing the path
+        to the files in the dataset.
+
+    Returns
+    -------
+    data_name : list
+        List of strings containing name of the file.
+
+    Takes a list of file paths and returns the file names.
+    It is used to sort the files when using the Aurora-2 data.
+
+    """
     data_name = []
 
     for a in data_dir:
@@ -143,6 +160,23 @@ def file_name_data(data_dir):
 
 
 def file_name_target(target_dir):
+    """
+
+    Parameters
+    ----------
+    target_dir : list
+        List of strings containing the path
+        to the files in the target dataset.
+
+    Returns
+    -------
+    target_name : list
+        List of strings containing name of the file.
+
+    Takes a list of file paths and returns the file names.
+    It is used to sort the files when using the Aurora-2 data.
+
+    """
     target_name = []
 
     for b in target_dir:
