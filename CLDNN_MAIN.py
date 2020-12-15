@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-Created on Tuesday Dec. 15 13:37:00 2020
+Created on Tuesday Dec. 15 13:35:17 2020
 
 Authors:  Martin Voigt Vejling, Daniel Bernard van Diepen,
           Andreas Anton Andersen, Morten Stig Kaaber
@@ -155,9 +155,9 @@ if __name__ == '__main__':
     SNR_list = [5] # Used for Aurora-2 test set
     test_on_clean = False # Used for Aurora-2 test set
 
-    save_model = False # Save neural network model dictionary
-    save_results = False # Save dictionary containing the experimental results
-    context_size = 4 # Frames of context (C = context_size * step)
+    save_model = True # Save neural network model dictionary
+    save_results = True # Save dictionary containing the experimental results
+    context_size = 10 # Frames of context (C = context_size * step)
     model_name = 'CLDNN_context{}'.format(context_size) # Name of the model
 
     # CLDNN hyperparameters
