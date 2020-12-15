@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-Created on Tuesday Dec. 15 12:23:10 2020
+Created on Tuesday Dec. 15 04:20:00 2020
 
 Authors:  Martin Voigt Vejling, Daniel Bernard van Diepen,
           Andreas Anton Andersen, Morten Stig Kaaber
@@ -799,7 +799,7 @@ def end_of_early_stopping(train_loss_plot, valid_loss_plot,
         plt.ylabel('Loss')
         plt.legend()
         if figname is not False:
-            plt.savefig('Figures\\' + figname + '_ES.pdf')
+            plt.savefig('Figures\\' + figname + '_ES.png')
         plt.show()
 
 
