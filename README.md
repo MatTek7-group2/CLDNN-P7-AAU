@@ -1,6 +1,7 @@
 # CLDNN-P7-AAU
 On the Generalisation Ability of Unsupervised and Supervised Voice Activity Detection Methods
 
+
 Data Sets:
 
 --- The Apollo-11 data organized in the archive ---
@@ -27,3 +28,13 @@ Data Sets:
 ## │					(.08 Files)
 ## ├── Aurora2TestSet-ReferenceVAD   -- file level transcriptions
 ## ├── Aurora2TrainSet-ReferenceVAD  -- file level transcriptions
+
+
+Scripts:
+
+CLDNN_MAIN
+	- Main script for training and testing convolutional long short-term memory fully connected deep neural networks.
+
+MODULE
+	- Module script containing functionality used in CLDNN_MAIN.
+
