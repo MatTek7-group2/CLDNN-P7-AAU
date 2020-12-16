@@ -106,11 +106,7 @@ class CLDNN(nn.Module):
         x = self.dropout_hidden(x)
 
         # Dense
-<<<<<<< Updated upstream
         x = x.permute(1, 0 , 2).squeeze() #Careful with batch size 1
-=======
-        x = x.permute(1, 0 , 2).squeeze() #Ødelægger batch size 1
->>>>>>> Stashed changes
         x = self.fc1(x)
         x = F.relu(x)
         x = self.dropout_hidden(x)

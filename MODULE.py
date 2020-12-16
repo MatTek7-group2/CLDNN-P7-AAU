@@ -421,7 +421,7 @@ def import_test_data(test_path, test_target_path,
         print('Load Test Data Error')
 
     
-          Sort to make the data match the targets
+    # Sort to make the data match the targets
     test_dir_name2, test_target_dir_name2 = file_name(test_dir, test_target_dir)
     sorted_test = sort_list(test_dir, test_dir_name2)
     sorted_test_target = sort_list(test_target_dir, test_target_dir_name2)
