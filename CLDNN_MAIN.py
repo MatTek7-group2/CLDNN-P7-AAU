@@ -56,16 +56,13 @@ class CLDNN(nn.Module):
         self.kernel_len1 = kwargs['kernel_len1']
         self.pool_size1 = kwargs['pool_size1']
 
-        #print((len_data - self.kernel_len1 + 1)/self.pool_size1)
         self.len2 = self.out_channels1
         self.in_channels2 = floor((len_data - self.kernel_len1 + 1)/(self.stride1*self.pool_size1))
         self.out_channels2 = kwargs['out_channels2']
         self.kernel_len2 = kwargs['kernel_len2']
         self.pool_size2 = kwargs['pool_size2']
 
-        #print((self.len2 - self.kernel_len2 + 1)/self.pool_size2)
         self.len_lstm1 = self.out_channels2*floor((self.len2 - self.kernel_len2 + 1)/self.pool_size2)
-        #print(self.len_lstm1)
         self.lstm_hidden_units = kwargs['lstm_hidden_units']
 
         self.dense_hidden_units = kwargs['dense_hidden_units']
@@ -102,14 +99,18 @@ class CLDNN(nn.Module):
         x = self.dropout_hidden(x)
 
         # LSTM
-        x, _ = self.lstm1(x) #tanh activation by default
+        x, _ = self.lstm1(x)
         x = self.dropout_hidden(x)
 
         x, _ = self.lstm2(x)
         x = self.dropout_hidden(x)
 
         # Dense
+<<<<<<< Updated upstream
         x = x.permute(1, 0 , 2).squeeze() #Careful with batch size 1
+=======
+        x = x.permute(1, 0 , 2).squeeze() #Ødelægger batch size 1
+>>>>>>> Stashed changes
         x = self.fc1(x)
         x = F.relu(x)
         x = self.dropout_hidden(x)
@@ -155,8 +156,8 @@ if __name__ == '__main__':
     SNR_list = [5] # Used for Aurora-2 test set
     test_on_clean = False # Used for Aurora-2 test set
 
-    save_model = True # Save neural network model dictionary
-    save_results = True # Save dictionary containing the experimental results
+    save_model = False # Save neural network model dictionary
+    save_results = False # Save dictionary containing the experimental results
     context_size = 10 # Frames of context (C = context_size * step)
     model_name = 'CLDNN_context{}'.format(context_size) # Name of the model
 
@@ -176,7 +177,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='CLDNN')
     parser.add_argument('--path', type=str,
                         default='C:\\Users\\marti',
-                        help='Path to the folder where the aurora2 folder is')
+                        help='Path to the folder where the aurora2/Fearless_2019 folders are')
     parser.add_argument('--fs', type=int, default=8000,
                         help='Sample rate (Default: 8000)')
     parser.add_argument('--segment_time', type=float, default=0.035,
@@ -222,8 +223,7 @@ if __name__ == '__main__':
 
     # Import Training Data
     if train_set == 'Aurora-2':
-        #### OBS HUSK AT RETTE TRAIN PATH TIL README
-        train_path = args.path + "\\aurora2\\SPEECHDATA\\TRAIN_NOISY/"
+        train_path = args.path + "\\aurora2\\SPEECHDATA\\TRAIN/"
         train_target_path = args.path + "\\aurora2\\Aurora2TrainSet-ReferenceVAD/"
         train_data, train_target = P7.import_train_data(train_path, train_target_path)
     elif train_set == 'Apollo-11':
@@ -326,7 +326,7 @@ if __name__ == '__main__':
                                                     scheduler, upd_epoch)
         print('')
         epoch += 1
-    print('Learning rate when ending training: {}\n'.format(scheduler.get_last_lr()[0]))
+    print('Learning rate when ending training: {:.4g}\n'.format(scheduler.get_last_lr()[0]))
 
     ### Test time ###
     if use_cuda is True:
@@ -367,7 +367,8 @@ if __name__ == '__main__':
                    'Threshold List': threshold_list,
                    'Test Time': test_time,
                    'Learning Rate': args.lr,
-                   'False and True Positive Rates': (fp, tp)}
+                   'False Positive Rates': fp,
+                   'True Positive Rates': tp}
         P7.save_obj(results, model_name, '')
     else:
         P7.plot_roc(fp, tp)
