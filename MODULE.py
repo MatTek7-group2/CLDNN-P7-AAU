@@ -596,10 +596,12 @@ def data_dir_APOLLO(path, type_):
         This is used as input to load_data_APOLLO().
 
     """
-    number_file = path + '\\Fearless_2019\\Fearless_Steps\\Data\\' + type_ + '_path.txt'
-    with open(number_file, 'r') as file:
-        a_init = file.readlines()
-        a = [int(a_i.split('.')[0]) for a_i in a_init]
+    if type_ == 'train':
+        a = [int('00{}'.format(i)) for i in range(1, 28)]
+    elif type_ == 'test':
+        a = [int('00{}'.format(i)) for i in range(28, 40)]
+    else:
+        print("Input Error: type_ not equal to 'train' or 'test'")
 
     folder = path + "\\Fearless_2019\\Fearless_Steps\\Data\\Audio\\Tracks\\Dev"
     data_files = []
@@ -629,10 +631,12 @@ def target_dir_APOLLO(path, type_):
         This is used as input to load_target().
 
     """
-    number_file = path + '\\Fearless_2019\\Fearless_Steps\\Data\\' + type_ + '_target_path.txt'
-    with open(number_file, 'r') as file:
-        a_init = file.readlines()
-        a = [int(a_i.split('.')[0]) for a_i in a_init]
+    if type_ == 'train':
+        a = [int('00{}'.format(i)) for i in range(1, 28)]
+    elif type_ == 'test':
+        a = [int('00{}'.format(i)) for i in range(28, 40)]
+    else:
+        print("Input Error: type_ not equal to 'train' or 'test'")
 
     folder = path + "\\Fearless_2019\\Fearless_Steps\\Data\\Transcripts\\SAD\\Dev"
     files_target = []
@@ -826,7 +830,7 @@ def end_of_early_stopping(train_loss_plot, valid_loss_plot,
     plt.ylabel('Loss')
     plt.legend()
     if figname is not False:
-        plt.savefig('Figures\\' + figname + '_ES.png')
+        plt.savefig(figname + '_EarlyStopping.png')
     plt.show()
 
 
@@ -870,7 +874,7 @@ def early_stopping(args, model, device, optimizer, scheduler,
     min_valid_loss = 0
     no_increase_counter = 0
     optim_updates = 0
-    updates_pr_pretrain_epoch = 0
+    updates_pr_pretrain_epoch = len(subtrain_loader)
     train_loss_plot = []
     valid_loss_plot = []
     for epoch in range(1, args.epochs + 1):
@@ -921,8 +925,6 @@ def early_stopping(args, model, device, optimizer, scheduler,
 
         if no_increase_counter == args.patience:
             break
-        if epoch == 1:
-            updates_pr_pretrain_epoch = updates_counter
 
     end_of_early_stopping(train_loss_plot, valid_loss_plot,
                           updates_pr_pretrain_epoch, updates_counter,

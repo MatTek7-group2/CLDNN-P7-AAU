@@ -11,14 +11,15 @@ In order to run the scripts, the data sets should be organised as follows:
 #### --- The Apollo-11 data organised in the archive ---
 
 ```
-./Fearless_Steps
-├── Data                       -- unzipped from the tar.gz file
-│   ├── Audio                  -- the audio as 8kHz wav files
-│   │   └── Tracks             -- audio files for VAD
-│   │       ├── Dev               (.wav Files)
-│   └── Transcripts            -- file level transcriptions
-│       ├── SAD                   (.TXT Files)
-│       │   └── Dev
+./Fearless_2019
+├── Fearless_Steps
+│   ├── Data                       -- unzipped from the tar.gz file
+│   │   ├── Audio                  -- the audio as 8kHz wav files
+│   │   │   └── Tracks             -- audio files for VAD
+│   │   │       ├── Dev               (.wav Files)
+│   │   └── Transcripts            -- file level transcriptions
+│   │       ├── SAD                   (.TXT Files)
+│   │       │   └── Dev
 ```
 
 
