@@ -109,7 +109,7 @@ class CLDNN(nn.Module):
         x = self.dropout_hidden(x)
 
         # Dense
-        x = x.permute(1, 0 , 2).squeeze() #Ødelægger batch size 1?
+        x = x.permute(1, 0 , 2).squeeze() #Careful with batch size 1
         x = self.fc1(x)
         x = F.relu(x)
         x = self.dropout_hidden(x)
@@ -300,7 +300,7 @@ if __name__ == '__main__':
     ### Train and Test Model ###
     print('\nPre-training:\n')
     model = CLDNN(w_len, step, context_size, **model_kwargs).to(device)
-    init_params = copy.deepcopy(model.state_dict()) #Kopierer initial parameters
+    init_params = copy.deepcopy(model.state_dict()) #Copies initial parameters
     optimizer = optim.RMSprop(model.parameters(), lr=args.lr)
 
     scheduler = StepLR(optimizer, step_size=1, gamma=args.gamma) #Exponential learning rate decay
