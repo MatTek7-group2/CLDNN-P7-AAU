@@ -1,5 +1,5 @@
 # On the Generalisation Ability of Unsupervised and Supervised Voice Activity Detection Methods
-Scripts accompanpanying the paper:
+Scripts accompanying the paper:
 
 A. A. Andersen, D. B. van Diepen, M. V. Vejling and M. S. Kaaber "On the Generalisation Ability of Unsupervised and Supervised Voice Activity Detection Methods", SEMCON, Aalborg University, Denmark, 2020
 
