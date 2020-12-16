@@ -18,7 +18,7 @@ in the paper
 Functionality for training and testing the CLDNN using PyTorch is included
 herein the use of early stopping, computing and plotting the receiver
 operation characteristic (ROC) curves and approximating the area under
-the ROC curve, abreviated AUC.
+the ROC curve, abbreviated AUC.
 
 The functionality provided in this module is used in the script "CLDNN_MAIN"
 which is located in the GitHub repository.
@@ -291,7 +291,7 @@ def load_target(files):
     Returns
     -------
     target : list
-        List containing the ground thruths (labels/targets).
+        List containing the ground truths (labels/targets).
 
     """
     if type(files) == str:
@@ -331,7 +331,7 @@ def SNR_data(test_path, SNR_list, include_clean=False, test_set='B',
         List of strings giving the paths to the targets in the test set.
 
     Search through the test data and find the data which has SNR as
-    stated in SNR_list and also find the clean data if includ_clean is true.
+    stated in SNR_list and also find the clean data if include_clean is true.
 
     """
     test_dir_full = []
@@ -391,7 +391,7 @@ def import_test_data(test_path, test_target_path,
     This function is used for the Aurora-2 Test Sets.
 
     """
-    #Only include certain SNR levels in the test data
+    # Only include certain SNR levels in the test data
     test_dir = SNR_data(test_path, SNR_list, include_clean, test_set, noise_types)
 
     target_dir_full = target_dir(test_target_path)
@@ -420,15 +420,16 @@ def import_test_data(test_path, test_target_path,
     else:
         print('Load Test Data Error')
 
-    #Sort to make the data match the targets
+    
+          Sort to make the data match the targets
     test_dir_name2, test_target_dir_name2 = file_name(test_dir, test_target_dir)
     sorted_test = sort_list(test_dir, test_dir_name2)
     sorted_test_target = sort_list(test_target_dir, test_target_dir_name2)
 
-    #Check that the files in the data and the target match
+    # Check that the files in the data and the target match
     same_file(sorted_test, sorted_test_target)
 
-    #Load data
+    # Load data
     test_data = load_data(sorted_test)
     test_target = load_target(sorted_test_target)
 
@@ -465,11 +466,11 @@ def import_train_data(train_path, train_target_path):
     This function is used for the Aurora-2 Training Set.
 
     """
-    #Directory of data files
+    # Directory of data files
     train_dir = data_dir(train_path)
     train_target_dir = target_dir(train_target_path)
 
-    #Sort the files so the data matches the target
+    # Sort the files so the data matches the target
     train_dir_name, train_target_dir_name = file_name(train_dir, train_target_dir)
     sorted_train = sort_list(train_dir, train_dir_name)
     sorted_train_target = sort_list(train_target_dir, train_target_dir_name)
@@ -481,7 +482,7 @@ def import_train_data(train_path, train_target_path):
     if len(train_data) == 0 or len(train_target) == 0:
         print('Train Data Directory error')
 
-    #Shuffling train data
+    # Shuffling train data
     train_data, train_target = shuffle(train_data, train_target)
 
     return train_data, train_target
@@ -559,7 +560,7 @@ def frame_index_list(w_len, step, data, context_size = 0):
 
     """
     frame_idx = []
-    for j, dp in enumerate(data): #loop over files
+    for j, dp in enumerate(data): # loop over files
         if context_size != 0:
             len_in_ends = context_size*step
             dp_true = dp[len_in_ends:-len_in_ends]
@@ -684,7 +685,7 @@ def train(args, model, device, train_loader, optimizer, epoch):
     model : PyTorch model class
     device : device
     train_loader : Dataloader
-    optimizer : PyTorch optmiser
+    optimizer : PyTorch optimiser
     epoch : int
         Number of epochs to run during training.
 
@@ -831,7 +832,7 @@ def end_of_early_stopping(train_loss_plot, valid_loss_plot,
 
 def early_stopping(args, model, device, optimizer, scheduler,
                    subtrain_loader, valid_loader,
-                   actuals_valid, actuals, figname = 'Validation_plot'):
+                   actuals_valid, actuals, figname='Validation_plot'):
     """
 
     Parameters
@@ -997,13 +998,13 @@ def early_stopping_retrain(args, model, device, train_loader, optimizer, epoch,
 # =============================================================================
 
 
-def roc(target, y_hat, nr_points = 1000):
+def roc(target, y_hat, nr_points=1000):
     """
 
     Parameters
     ----------
     target : ndarray
-        Array containing the ground thruths (labels/targets).
+        Array containing the ground truths (labels/targets).
     y_hat : ndarray
         Model scores.
     nr_points : int, optional (Default: 1000)
@@ -1049,7 +1050,7 @@ def roc(target, y_hat, nr_points = 1000):
     return fp, tp, roc_auc, acc, q
 
 
-def plot_roc(fp, tp, figname = False):
+def plot_roc(fp, tp, figname=False):
     """
 
     Parameters
@@ -1066,7 +1067,7 @@ def plot_roc(fp, tp, figname = False):
 
     roc_auc = auc(fp, tp)
     plt.style.use('ggplot')
-    plt.plot(fp, tp, color = 'magenta', label='ROC curve (AUC = {:.4g})'.format(roc_auc))
+    plt.plot(fp, tp, color='magenta', label='ROC curve (AUC = {:.4g})'.format(roc_auc))
 
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
@@ -1081,7 +1082,7 @@ def plot_roc(fp, tp, figname = False):
 # =============================================================================
 
 
-def save_obj(obj, name, folder = 'Model_Dictionaries/'):
+def save_obj(obj, name, folder='Model_Dictionaries/'):
     """
 
     Parameters
@@ -1098,7 +1099,7 @@ def save_obj(obj, name, folder = 'Model_Dictionaries/'):
         pickle.dump(obj, f)
 
 
-def load_obj(name, folder = 'Model_Dictionaries/'):
+def load_obj(name, folder='Model_Dictionaries/'):
     """
 
     Parameters
@@ -1106,7 +1107,7 @@ def load_obj(name, folder = 'Model_Dictionaries/'):
     name : str
         Name of the file to load the dictionary from.
     folder : str, optional (Default: 'Model_Dictionaries/')
-        Name of the folder to laod the dictionary from.
+        Name of the folder to load the dictionary from.
 
     Returns
     -------
@@ -1116,4 +1117,3 @@ def load_obj(name, folder = 'Model_Dictionaries/'):
     """
     with open(folder + name + '.pkl', 'rb') as f:
         return pickle.load(f)
-
