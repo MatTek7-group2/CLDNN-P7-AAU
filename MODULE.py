@@ -488,7 +488,7 @@ def import_train_data(train_path, train_target_path):
     return train_data, train_target
 
 
-def add_context(data, context_size, w_len, step, noisy=True):
+def add_context(data, context_size, step, noisy=True):
     """
 
     Parameters
@@ -497,8 +497,6 @@ def add_context(data, context_size, w_len, step, noisy=True):
         List of arrays. Each array containing a waveform.
     context_size : int
         How many adjacent frames to include in the context.
-    w_len : int
-        Number of samples in frame without context.
     step : int
         Number of samples between frames.
     noisy : bool, optional (Default: True)

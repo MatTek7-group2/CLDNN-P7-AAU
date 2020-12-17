@@ -246,8 +246,8 @@ if __name__ == '__main__':
         print('Test Set Error')
 
     #Add context to data
-    train_data = P7.add_context(train_data, context_size, w_len, step)
-    test_data = P7.add_context(test_data, context_size, w_len, step)
+    train_data = P7.add_context(train_data, context_size, step)
+    test_data = P7.add_context(test_data, context_size, step)
 
     #Determine indices of frames in data
     train_frame_idx = P7.frame_index_list(w_len, step, train_data, context_size)
