@@ -5,6 +5,8 @@ A. A. Andersen, D. B. van Diepen, M. V. Vejling and M. S. Kaaber "On the General
 
 Internally published for the seventh semester conference (SEMCON) at Department of Electronic Systems, Aalborg University.
 
+<img src="https://user-images.githubusercontent.com/19616450/191853787-383e0e93-99c1-402b-8b5b-ab3304245c22.png" width=66%>
+
 ## Data Sets:
 In order to run the scripts, the data sets should be organised as follows:
 
